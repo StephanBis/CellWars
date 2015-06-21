@@ -49,6 +49,8 @@
     <Reference Include="TelerikCommon, Version=2015.1.225.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cell.cs" />
+    <Compile Include="Server.cs" />
     <Compile Include="Start.cs">
       <SubType>Form</SubType>
     </Compile>

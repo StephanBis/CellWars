@@ -26,7 +26,7 @@ namespace CellWarsServer
             {
                 counter += 1;
                 clientSocket = serverSocket.AcceptTcpClient();
-                Console.WriteLine(" >> " + "Client No:" + Convert.ToString(counter) + " started!");
+                Console.WriteLine(" >> " + "Client ID:" + Convert.ToString(counter) + " connected!");
                 handleClient client = new handleClient();
                 client.startClient(clientSocket, Convert.ToString(counter));
                 clients.Add(client);
@@ -43,65 +43,83 @@ namespace CellWarsServer
     public class handleClient
     {
         TcpClient clientSocket;
-        string clNo;
         Thread ctThread;
+
+        //properties
         public string username;
+        public int x, y, size;
+        public string color;
+        public string id;
 
         public void startClient(TcpClient inClientSocket, string clineNo)
         {
             this.clientSocket = inClientSocket;
-            this.clNo = clineNo;
+            this.id = clineNo;
             ctThread = new Thread(doChat);
             ctThread.Start();
         }
 
         private void doChat()
         {
-            int requestCount = 0;
-            byte[] bytesFrom = new byte[10025];
-            string dataFromClient = null;
-            Byte[] sendBytes = null;
-            string serverResponse = null;
-            string rCount = null;
-            requestCount = 0;
-
             while ((true))
             {
                 try
                 {
-                    requestCount = requestCount + 1;
+                    byte[] bytesFrom = new byte[clientSocket.ReceiveBufferSize];
+                    string dataFromClient = null;
+                    Byte[] sendBytes = null;
+                    string serverResponse = null;
+
                     NetworkStream networkStream = clientSocket.GetStream();
-                    //networkStream.Read(bytesFrom, 0, (int)clientSocket.ReceiveBufferSize);
                     networkStream.Read(bytesFrom, 0, bytesFrom.Length);
                     dataFromClient = System.Text.Encoding.ASCII.GetString(bytesFrom);
                     dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
-                    Console.WriteLine(" >> " + "Client(" + clNo + ") - " + dataFromClient);
 
                     if (dataFromClient.StartsWith("~"))
                     {
                         string commando = dataFromClient.Substring(1, dataFromClient.IndexOf(":") - 1);
-                        string value = dataFromClient.Substring(dataFromClient.IndexOf(":"));
+                        string value = dataFromClient.Substring(dataFromClient.IndexOf(":") + 1);
 
                         switch (commando)
                         {
                             case "Username" :
                                 this.username = value;
                                 break;
+                            case "X":
+                                this.x = Convert.ToInt32(value);
+                                break;
+                            case "Y":
+                                this.y = Convert.ToInt32(value);
+                                break;
+                            case "Color":
+                                this.color = value;
+                                break;
+                            case "Size":
+                                this.size = Convert.ToInt32(value);
+                                break;
+                            case "Output":
+                                serverResponse = "Id:" + id + ";Username:" + username + ";X:" + x.ToString() + ";Y:" + y.ToString() + ";Color:" + color + ";Size:" + size.ToString();
+                                sendBytes = Encoding.ASCII.GetBytes(serverResponse);
+                                networkStream.Write(sendBytes, 0, sendBytes.Length);
+                                networkStream.Flush();
+                                Console.WriteLine(" >> Broadcast: " + serverResponse);
+                                break;
+
+                                
                         }
                     }
-
-                    rCount = Convert.ToString(requestCount);
-                    serverResponse = "Your username is: " + username;
-                    sendBytes = Encoding.ASCII.GetBytes(serverResponse);
-                    networkStream.Write(sendBytes, 0, sendBytes.Length);
-                    networkStream.Flush();
-                    Console.WriteLine(" >> " + serverResponse);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(" >> " + ex.Message);
-                    Console.WriteLine(" >> " + "Client No:" + Convert.ToString(clNo) + " disconnected!");
-                    ctThread.Abort();
+                    if (ex.Message == "Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host.")
+                    {
+                        Console.WriteLine(" >> " + "Client ID:" + Convert.ToString(id) + " disconnected!");
+                        ctThread.Abort();
+                    }
+                    else
+                    {
+                        Console.WriteLine(" >> " + ex.Message);
+                    }
                 }
             }
         }

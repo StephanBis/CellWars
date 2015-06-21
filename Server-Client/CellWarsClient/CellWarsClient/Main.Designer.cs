@@ -28,39 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.telerikMetroTouchTheme1 = new Telerik.WinControls.Themes.TelerikMetroTouchTheme();
-            this.connectButton = new Telerik.WinControls.UI.RadButton();
-            this.outputListbox = new Telerik.WinControls.UI.RadListControl();
-            ((System.ComponentModel.ISupportInitialize)(this.connectButton)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.outputListbox)).BeginInit();
+            this.gamePanel = new Telerik.WinControls.UI.RadPanel();
+            this.checkTimer = new System.Windows.Forms.Timer(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.gamePanel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
-            // connectButton
+            // gamePanel
             // 
-            this.connectButton.Location = new System.Drawing.Point(12, 12);
-            this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(110, 32);
-            this.connectButton.TabIndex = 0;
-            this.connectButton.Text = "Connect";
-            this.connectButton.ThemeName = "TelerikMetroTouch";
-            this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
+            this.gamePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gamePanel.Location = new System.Drawing.Point(0, 0);
+            this.gamePanel.Name = "gamePanel";
+            this.gamePanel.Size = new System.Drawing.Size(992, 951);
+            this.gamePanel.TabIndex = 0;
+            this.gamePanel.ThemeName = "TelerikMetroTouch";
             // 
-            // outputListbox
+            // checkTimer
             // 
-            this.outputListbox.Location = new System.Drawing.Point(12, 50);
-            this.outputListbox.Name = "outputListbox";
-            this.outputListbox.Size = new System.Drawing.Size(285, 335);
-            this.outputListbox.TabIndex = 1;
-            this.outputListbox.Text = "radListControl1";
+            this.checkTimer.Interval = 500;
+            this.checkTimer.Tick += new System.EventHandler(this.checkTimer_Tick);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(634, 397);
-            this.Controls.Add(this.outputListbox);
-            this.Controls.Add(this.connectButton);
+            this.ClientSize = new System.Drawing.Size(992, 951);
+            this.Controls.Add(this.gamePanel);
             this.Name = "Main";
             // 
             // 
@@ -68,8 +63,9 @@
             this.RootElement.ApplyShapeToControl = true;
             this.Text = "Cell Wars";
             this.ThemeName = "TelerikMetroTouch";
-            ((System.ComponentModel.ISupportInitialize)(this.connectButton)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.outputListbox)).EndInit();
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
+            ((System.ComponentModel.ISupportInitialize)(this.gamePanel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
@@ -78,7 +74,7 @@
         #endregion
 
         private Telerik.WinControls.Themes.TelerikMetroTouchTheme telerikMetroTouchTheme1;
-        private Telerik.WinControls.UI.RadButton connectButton;
-        private Telerik.WinControls.UI.RadListControl outputListbox;
+        private Telerik.WinControls.UI.RadPanel gamePanel;
+        private System.Windows.Forms.Timer checkTimer;
     }
 }
